@@ -1,0 +1,11 @@
+/src/vendor
+/src/node_modules
+/src/public/hot
+/src/public/storage
+/src/storage/*.key
+/src/.env
+/src/.env.backup
+/src/.phpunit.result.cache
+composer.phar
+composer-setup.php
+.agent/

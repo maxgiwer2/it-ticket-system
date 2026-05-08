@@ -44,7 +44,24 @@
             <div class="space-x-6 flex items-center">
                 <a href="{{ route('tickets.create') }}" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">หน้าแรก</a>
                 <a href="{{ route('tickets.search') }}" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">ติดตามสถานะ</a>
-                <a href="{{ route('admin.departments.index') }}" class="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg hover:bg-indigo-50 hover:text-indigo-600 transition-all">จัดการหน่วยงาน</a>
+                
+                <div class="h-6 w-px bg-slate-200 mx-2"></div>
+                
+                @auth
+                    <a href="{{ route('admin.dashboard') }}" class="text-sm font-bold text-slate-700 hover:text-indigo-600 transition-colors">Dashboard</a>
+                    <a href="{{ route('admin.tickets.index') }}" class="text-sm font-bold text-slate-700 hover:text-indigo-600 transition-colors">รายการแจ้งซ่อม</a>
+                    <a href="{{ route('admin.departments.index') }}" class="text-sm font-bold text-slate-700 hover:text-indigo-600 transition-colors">หน่วยงาน</a>
+                    @if(auth()->user()->role === 'superadmin')
+                        <a href="{{ route('admin.users.index') }}" class="text-sm font-bold text-slate-700 hover:text-indigo-600 transition-colors">จัดการผู้ใช้งาน</a>
+                    @endif
+                    
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-rose-50 text-rose-600 text-sm font-bold rounded-lg hover:bg-rose-600 hover:text-white transition-all">ออกจากระบบ</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-600 hover:text-white transition-all">สำหรับเจ้าหน้าที่</a>
+                @endauth
             </div>
         </div>
     </nav>

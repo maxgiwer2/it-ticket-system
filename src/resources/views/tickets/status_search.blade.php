@@ -12,7 +12,7 @@
         <p class="text-slate-500 mt-2">กรอกหมายเลข Ticket เพื่อตรวจสอบความคืบหน้าของงาน</p>
     </div>
 
-    <form action="{{ route('tickets.status') }}" method="GET" class="space-y-6">
+    <form action="{{ route('tickets.search') }}" method="GET" class="space-y-6">
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2 text-center">หมายเลข Ticket</label>
             <input type="text" name="ticket_number" required

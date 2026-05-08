@@ -97,11 +97,21 @@ class InitialDataSeeder extends Seeder
             \App\Models\JobType::updateOrCreate(['name' => $type]);
         }
 
+        // Create Superadmin User
+        \App\Models\User::updateOrCreate(
+            ['email' => 'superadmin@example.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => \Hash::make('password'),
+                'role' => 'superadmin'
+            ]
+        );
+
         // Create Admin User
         \App\Models\User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Admin User',
+                'name' => 'General Admin',
                 'password' => \Hash::make('password'),
                 'role' => 'admin'
             ]

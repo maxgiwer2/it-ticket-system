@@ -12,7 +12,7 @@ class Ticket extends Model
     protected $fillable = [
         'ticket_number', 'requester_name', 'department_id', 
         'phone', 'job_type_id', 'details', 'status', 
-        'attachment_path', 'assigned_to'
+        'attachment_path', 'assigned_to', 'admin_note'
     ];
 
     public function department()
@@ -23,6 +23,11 @@ class Ticket extends Model
     public function jobType()
     {
         return $this->belongsTo(JobType::class);
+    }
+
+    public function technician()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 
     public function logs()

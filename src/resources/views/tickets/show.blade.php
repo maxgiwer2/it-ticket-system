@@ -42,7 +42,12 @@
                 </div>
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">หน่วยงาน</h3>
-                    <p class="text-slate-700 mt-1">{{ $ticket->department->name }}</p>
+                    <p class="text-slate-700 mt-1">
+                        {{ $ticket->department->name }} 
+                        <span class="ml-2 text-xs px-2 py-0.5 bg-slate-100 text-slate-500 rounded font-bold">
+                            {{ $ticket->department->type === 'faculty' ? 'คณะแพทยศาสตร์' : 'ศูนย์การแพทย์ฯ' }}
+                        </span>
+                    </p>
                 </div>
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">เบอร์ติดต่อ</h3>
@@ -58,6 +63,56 @@
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">วันที่แจ้ง</h3>
                     <p class="text-slate-700 mt-1">{{ $ticket->created_at->format('d/m/Y H:i') }} น.</p>
                 </div>
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">ผู้รับผิดชอบ</h3>
+                    <p class="text-indigo-600 font-bold mt-1">
+                        {{ $ticket->technician ? $ticket->technician->name : 'กำลังรอมอบหมาย' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Timeline -->
+        <div class="mb-10 bg-slate-50 p-8 rounded-3xl border border-slate-100">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8 text-center">ความคืบหน้าของ Ticket</h3>
+            <div class="relative">
+                <!-- Line -->
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-200 -translate-y-1/2 hidden md:block"></div>
+                <div class="flex flex-col md:flex-row justify-between relative space-y-8 md:space-y-0">
+                    @php
+                        $steps = [
+                            ['key' => 'pending', 'label' => 'ได้รับเรื่องแล้ว', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
+                            ['key' => 'processing', 'label' => 'กำลังดำเนินการ', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
+                            ['key' => 'completed', 'label' => 'เสร็จสิ้น', 'icon' => 'M5 13l4 4L19 7'],
+                        ];
+                        $foundCurrent = false;
+                        $currentIndex = 0;
+                        foreach($steps as $idx => $step) {
+                            if($step['key'] === $ticket->status) {
+                                $currentIndex = $idx;
+                                break;
+                            }
+                        }
+                    @endphp
+
+                    @foreach($steps as $index => $step)
+                        @php
+                            $isActive = $index <= $currentIndex;
+                            $isCurrent = $index === $currentIndex;
+                        @endphp
+                        <div class="flex flex-col items-center flex-1 relative">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center z-10 transition-all duration-500 {{ $isActive ? 'primary-gradient text-white shadow-lg shadow-indigo-200' : 'bg-white text-slate-300 border-2 border-slate-100' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $step['icon'] }}"></path></svg>
+                            </div>
+                            <div class="mt-3 text-center">
+                                <p class="text-sm font-bold {{ $isActive ? 'text-indigo-600' : 'text-slate-400' }}">{{ $step['label'] }}</p>
+                                @if($isCurrent)
+                                    <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-tighter">Current Stage</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
 
@@ -67,6 +122,18 @@
                 {{ $ticket->details }}
             </div>
         </div>
+
+        @if($ticket->admin_note)
+        <div class="mt-8 p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
+            <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                บันทึกจากเจ้าหน้าที่
+            </h3>
+            <div class="text-slate-700 leading-relaxed italic">
+                {{ $ticket->admin_note }}
+            </div>
+        </div>
+        @endif
 
         @if($ticket->attachment_path)
         <div class="mt-8">
@@ -83,7 +150,7 @@
     <div class="bg-slate-50 p-8 border-t border-slate-100 flex justify-center">
         <a href="{{ route('tickets.create') }}" class="text-indigo-600 font-bold hover:underline">ส่งใบแจ้งซ่อมใหม่</a>
         <span class="mx-4 text-slate-300">|</span>
-        <a href="{{ route('tickets.status') }}" class="text-slate-500 font-bold hover:underline">ติดตามสถานะอื่น</a>
+        <a href="{{ route('tickets.search') }}" class="text-slate-500 font-bold hover:underline">ติดตามสถานะอื่น</a>
     </div>
 </div>
 @endsection

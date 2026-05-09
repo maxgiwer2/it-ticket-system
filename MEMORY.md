@@ -49,5 +49,17 @@
 - [ ] Scaffold the frontend UI (Requester Form and Staff Dashboard).
 - [ ] Implement the PHP API for ticket submission.
 
+### 2026-05-09 (Current)
+- **Task**: Personalizing Admin Dashboard and Integrating Workload System.
+- **Achievements**:
+  - [x] Implemented Personalized Admin Statistics (Assigned to Me).
+  - [x] Added IT Workload Log System (Non-ticket tasks).
+  - [x] Fixed visual glitches (FOUC) and improved loading aesthetics.
+  - [/] Unified Dashboard Integration: Combining Tickets & Workloads.
+- **Next Steps**:
+  - [ ] Update DashboardController to aggregate dual-layer data.
+  - [ ] Implement Dual-Indicator Calendar (Tickets + Workloads).
+  - [ ] Add Workload summary row to Dashboard statistics card.
+
 ---
-*Last Updated: 2026-05-08 09:45 (Local Time)*
+*Last Updated: 2026-05-09 13:06 (Local Time)*

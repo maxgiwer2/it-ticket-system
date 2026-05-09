@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\WorkloadController;
 
 Route::get('/', [TicketController::class, 'create'])->name('tickets.create');
 Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
@@ -26,6 +27,7 @@ Route::get('/tickets/search', [TicketController::class, 'statusSearch'])->name('
 Route::get('/tickets/{ticket_number}', [TicketController::class, 'show'])->name('tickets.show');
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportController;
 
 // Auth Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -42,5 +44,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() {
     Route::post('/tickets', [AdminTicketController::class, 'store'])->name('tickets.store');
     Route::get('/tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show');
     Route::patch('/tickets/{ticket}/status', [AdminTicketController::class, 'updateStatus'])->name('tickets.updateStatus');
+    Route::get('/tickets/export', [ReportController::class, 'exportCsv'])->name('tickets.export');
     Route::post('/tickets/{ticket}/accept', [AdminTicketController::class, 'accept'])->name('tickets.accept');
+    Route::resource('workloads', WorkloadController::class);
 });

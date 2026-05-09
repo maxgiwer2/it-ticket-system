@@ -34,4 +34,9 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketLog::class);
     }
+
+    public function collaborators()
+    {
+        return $this->belongsToMany(User::class, 'ticket_collaborators');
+    }
 }

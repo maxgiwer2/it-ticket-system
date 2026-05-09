@@ -17,8 +17,9 @@ class TicketController extends Controller
             ->orderBy('name')
             ->get()
             ->groupBy('type');
-        $jobTypes = JobType::all();
+        $jobTypes = JobType::all()->groupBy('category');
         return view('tickets.create', compact('departments', 'jobTypes'));
+
     }
 
     public function store(Request $request)

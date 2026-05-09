@@ -20,9 +20,18 @@ class UserController extends Controller
         });
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::whereIn('role', ['admin', 'superadmin'])->get();
+        $query = User::whereIn('role', ['admin', 'superadmin']);
+
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('email', 'like', "%{$request->search}%");
+            });
+        }
+
+        $users = $query->get();
         return view('admin.users.index', compact('users'));
     }
 

@@ -24,7 +24,7 @@
             <div class="relative z-10 space-y-8">
                 <!-- Type Selector -->
                 <div>
-                    <label class="block text-sm font-black text-slate-700 uppercase tracking-widest mb-4">ประเภทภาระงาน</label>
+                    <label class="block text-lg font-black text-slate-800 uppercase tracking-widest mb-4">ประเภทภาระงาน</label>
                     <input type="hidden" name="type" id="workload_type" value="{{ old('type', 'ประชุม') }}">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         @foreach(['อบรม', 'ช่วยงาน/ event', 'ประชุม', 'พัฒนาระบบ/ Server'] as $type)
@@ -43,7 +43,7 @@
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
                                 @endif
                             </div>
-                            <span class="text-[10px] font-black uppercase tracking-tighter text-center leading-tight">{{ $type }}</span>
+                            <span class="text-xs font-black uppercase tracking-tight text-center leading-tight">{{ $type }}</span>
                         </button>
                         @endforeach
                     </div>
@@ -52,24 +52,24 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-sm font-black text-slate-700 uppercase tracking-widest mb-3">วันที่ปฏิบัติงาน</label>
+                        <label class="block text-lg font-black text-slate-800 uppercase tracking-widest mb-3">วันที่ปฏิบัติงาน</label>
                         <input type="date" name="work_date" value="{{ old('work_date', date('Y-m-d')) }}" required
-                            class="w-full px-6 py-4 rounded-3xl border border-slate-100 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold text-slate-700">
+                            class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-black text-xl text-slate-900">
                         @error('work_date') <p class="mt-2 text-xs text-rose-500 font-bold">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-black text-slate-700 uppercase tracking-widest mb-3">เอกสาร/รูปภาพแนบ</label>
+                        <label class="block text-lg font-black text-slate-800 uppercase tracking-widest mb-3">เอกสาร/รูปภาพแนบ</label>
                         <input type="file" name="attachment" 
-                            class="w-full px-6 py-3 rounded-3xl border border-dashed border-slate-200 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 transition-all text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-emerald-500 file:text-white file:cursor-pointer">
-                        <p class="text-[10px] text-slate-400 mt-2 italic">รองรับไฟล์ JPG, PNG, PDF, DOC (สูงสุด 5MB)</p>
+                            class="w-full px-8 py-4 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 transition-all text-sm font-black text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-emerald-500 file:text-white file:cursor-pointer">
+                        <p class="text-xs text-slate-400 mt-2 font-bold italic">รองรับไฟล์ JPG, PNG, PDF, DOC (สูงสุด 5MB)</p>
                         @error('attachment') <p class="mt-2 text-xs text-rose-500 font-bold">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-black text-slate-700 uppercase tracking-widest mb-3">รายละเอียดการปฏิบัติงาน</label>
+                    <label class="block text-lg font-black text-slate-800 uppercase tracking-widest mb-3">รายละเอียดการปฏิบัติงาน</label>
                     <textarea name="details" rows="5" required
-                        class="w-full px-8 py-6 rounded-[2rem] border border-slate-100 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700 placeholder:text-slate-300"
+                        class="w-full px-10 py-8 rounded-[2.5rem] border-2 border-slate-100 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-black text-xl text-slate-900 placeholder:text-slate-300"
                         placeholder="ระบุรายละเอียดภาระงานที่ดำเนินการ..."></textarea>
                     @error('details') <p class="mt-2 text-xs text-rose-500 font-bold">{{ $message }}</p> @enderror
                 </div>

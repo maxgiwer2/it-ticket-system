@@ -10,8 +10,13 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Get selected month and year or default to current
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+        $selectedDate = \Carbon\Carbon::createFromDate($year, $month, 1);
+
         $stats = [
             'total' => Ticket::count(),
             'pending' => Ticket::where('status', 'pending')->count(),
@@ -20,46 +25,60 @@ class DashboardController extends Controller
             'more_info' => Ticket::where('status', 'more_info')->count(),
         ];
 
-        // Personal Stats for current month
+        // Personal Stats for current month (If superadmin, show total for all admins)
+        $isSuperAdmin = auth()->user()->role === 'superadmin';
+        
         $personalStats = [
-            'total' => Ticket::where('assigned_to', auth()->id())
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
+            'total' => Ticket::when(!$isSuperAdmin, function($q) {
+                    return $q->where('assigned_to', auth()->id());
+                })
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
                 ->count(),
-            'completed' => Ticket::where('assigned_to', auth()->id())
+            'completed' => Ticket::when(!$isSuperAdmin, function($q) {
+                    return $q->where('assigned_to', auth()->id());
+                })
                 ->where('status', 'completed')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
                 ->count(),
-            'processing' => Ticket::where('assigned_to', auth()->id())
+            'processing' => Ticket::when(!$isSuperAdmin, function($q) {
+                    return $q->where('assigned_to', auth()->id());
+                })
                 ->whereIn('status', ['pending', 'processing', 'more_info'])
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
                 ->count(),
         ];
 
         // Calendar Data: Tickets
-        $ticketCalendar = Ticket::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->where('assigned_to', auth()->id())
+        $ticketCalendar = Ticket::whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->when(!$isSuperAdmin, function($q) {
+                return $q->where('assigned_to', auth()->id());
+            })
             ->selectRaw('DATE(created_at) as date, count(*) as count')
             ->groupBy('date')
             ->get()
             ->pluck('count', 'date');
 
         // Calendar Data: Workloads
-        $workloadCalendar = Workload::whereMonth('work_date', now()->month)
-            ->whereYear('work_date', now()->year)
-            ->where('user_id', auth()->id())
+        $workloadCalendar = Workload::whereMonth('work_date', $month)
+            ->whereYear('work_date', $year)
+            ->when(!$isSuperAdmin, function($q) {
+                return $q->where('user_id', auth()->id());
+            })
             ->selectRaw('work_date as date, count(*) as count')
             ->groupBy('date')
             ->get()
             ->pluck('count', 'date');
 
-        // Personal Workload Count for current month
-        $personalStats['workloads'] = Workload::where('user_id', auth()->id())
-            ->whereMonth('work_date', now()->month)
-            ->whereYear('work_date', now()->year)
+        // Workload Count (If superadmin, show total for everyone)
+        $personalStats['workloads'] = Workload::when(!$isSuperAdmin, function($q) {
+                return $q->where('user_id', auth()->id());
+            })
+            ->whereMonth('work_date', $month)
+            ->whereYear('work_date', $year)
             ->count();
 
         // Merge into Unified Calendar Data
@@ -102,6 +121,14 @@ class DashboardController extends Controller
             $chartData['data'][] = $dailyTrend->get($date, 0);
         }
 
-        return view('admin.dashboard', compact('stats', 'personalStats', 'calendarData', 'latestTickets', 'deptStats', 'chartData'));
+        return view('admin.dashboard', compact(
+            'stats', 
+            'personalStats', 
+            'calendarData', 
+            'latestTickets', 
+            'chartData', 
+            'deptStats',
+            'selectedDate'
+        ));
     }
 }

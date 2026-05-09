@@ -11,7 +11,12 @@ class WorkloadController extends Controller
 {
     public function index()
     {
-        $workloads = Workload::where('user_id', auth()->id())
+        $isSuperAdmin = auth()->user()->role === 'superadmin';
+        
+        $workloads = Workload::with('user')
+            ->when(!$isSuperAdmin, function($q) {
+                return $q->where('user_id', auth()->id());
+            })
             ->orderBy('work_date', 'desc')
             ->paginate(10);
 

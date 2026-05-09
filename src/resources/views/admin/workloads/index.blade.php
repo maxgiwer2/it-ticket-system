@@ -6,8 +6,10 @@
 <div class="max-w-6xl mx-auto">
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-            <h1 class="text-5xl font-black text-slate-900 italic tracking-tighter">My Workload</h1>
-            <p class="text-slate-500 mt-2 font-medium">บันทึกภาระงานและการปฏิบัติงานทั้งหมดของคุณ</p>
+            <h1 class="text-5xl font-black text-slate-900 italic tracking-tighter">
+                {{ auth()->user()->role === 'superadmin' ? 'All Workloads' : 'My Workload' }}
+            </h1>
+            <p class="text-slate-500 mt-2 font-medium">บันทึกภาระงานและการปฏิบัติงานทั้งหมด{{ auth()->user()->role === 'superadmin' ? 'ในระบบ' : 'ของคุณ' }}</p>
         </div>
         <a href="{{ route('admin.workloads.create') }}" class="cta-gradient text-white px-10 py-5 rounded-[2rem] font-black shadow-xl shadow-emerald-200 hover:shadow-emerald-400 hover:-translate-y-1 transition-all flex items-center group">
             <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center mr-3 group-hover:rotate-90 transition-transform">
@@ -44,7 +46,12 @@
 
                 <div class="flex-grow space-y-4">
                     <div class="flex items-center gap-3">
-                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest {{ 
+                        @if(auth()->user()->role === 'superadmin')
+                        <span class="px-3 py-1 bg-slate-900 text-white text-[9px] font-black rounded-lg uppercase tracking-tighter">
+                            Admin: {{ $workload->user->name }}
+                        </span>
+                        @endif
+                        <span class="px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest {{ 
                             $workload->type === 'อบรม' ? 'bg-blue-100 text-blue-700' : 
                             ($workload->type === 'ช่วยงาน/ event' ? 'bg-amber-100 text-amber-700' : 
                             ($workload->type === 'ประชุม' ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700')) 
@@ -59,8 +66,8 @@
                         @endif
                     </div>
                     
-                    <div class="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 group-hover:bg-white transition-colors duration-300">
-                        <p class="text-slate-700 leading-relaxed font-medium whitespace-pre-line">{{ $workload->details }}</p>
+                    <div class="bg-white p-8 rounded-3xl border-2 border-slate-100 group-hover:border-indigo-100 transition-colors duration-300 shadow-sm">
+                        <p class="text-2xl font-black text-slate-900 leading-tight whitespace-pre-line tracking-tight">{{ $workload->details }}</p>
                     </div>
                 </div>
 

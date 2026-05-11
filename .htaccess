@@ -1,10 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    
-    # ห้ามเข้าถึงไฟล์ตรงๆ ในโฟลเดอร์ src
-    RewriteRule ^src/(.*)$ src/public/$1 [L]
-    
-    # ส่งทุกอย่างไปที่ src/public
-    RewriteCond %{REQUEST_URI} !^/src/public/
+
+    # ส่งคำขอทั้งหมดเข้าไปที่ src/public
     RewriteRule ^(.*)$ src/public/$1 [L]
 </IfModule>

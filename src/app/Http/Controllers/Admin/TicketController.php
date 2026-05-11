@@ -23,6 +23,10 @@ class TicketController extends Controller
             $query->where('department_id', $request->department_id);
         }
 
+        if ($request->job_type_id) {
+            $query->where('job_type_id', $request->job_type_id);
+        }
+
         if ($request->assigned_to) {
             if ($request->assigned_to != 'all') {
                 $query->where('assigned_to', $request->assigned_to);
@@ -45,9 +49,10 @@ class TicketController extends Controller
 
         $tickets = $query->orderBy('created_at', 'desc')->paginate(10);
         $departments = Department::orderBy('name')->get();
+        $jobTypes = JobType::orderBy('name')->get();
         $admins = User::where('role', 'admin')->orderBy('name')->get();
 
-        return view('admin.tickets.index', compact('tickets', 'departments', 'admins'));
+        return view('admin.tickets.index', compact('tickets', 'departments', 'jobTypes', 'admins'));
     }
 
     public function create()

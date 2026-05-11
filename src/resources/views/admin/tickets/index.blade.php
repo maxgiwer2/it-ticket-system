@@ -25,7 +25,7 @@
 
         <!-- Advanced Filters -->
         <div class="mt-8 glass-card p-6 rounded-[2rem] border border-white/60 shadow-xl">
-            <form action="{{ route('admin.tickets.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <form action="{{ route('admin.tickets.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}" 
                         class="w-full pl-10 pr-4 py-3 rounded-xl border-none bg-slate-100/50 focus-ring outline-none transition-all text-sm"
@@ -56,9 +56,16 @@
                     @endforeach
                 </select>
 
+                <select name="job_type_id" onchange="this.form.submit()" class="w-full px-4 py-3 rounded-xl border-none bg-slate-100/50 focus:ring-2 focus:ring-emerald-500 outline-none text-sm appearance-none cursor-pointer font-medium text-slate-700">
+                    <option value="">ทุกประเภทงาน</option>
+                    @foreach($jobTypes as $type)
+                        <option value="{{ $type->id }}" {{ request('job_type_id') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                    @endforeach
+                </select>
+
                 <div class="flex gap-2">
                     <button type="submit" class="flex-grow bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition-all text-sm">กรองข้อมูล</button>
-                    @if(request()->anyFilled(['search', 'status', 'department_id', 'assigned_to']))
+                    @if(request()->anyFilled(['search', 'status', 'department_id', 'assigned_to', 'job_type_id']))
                         <a href="{{ route('admin.tickets.index') }}" class="w-12 bg-rose-50 text-rose-500 flex items-center justify-center rounded-xl hover:bg-rose-100 transition-all" title="ล้างการค้นหา">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </a>
@@ -74,6 +81,7 @@
                 <thead>
                     <tr class="bg-slate-50/50">
                         <th class="px-4 sm:px-8 py-5 text-xs sm:text-sm font-black text-slate-700 uppercase tracking-wide">หมายเลข / หัวข้อการแจ้ง</th>
+                        <th class="px-4 sm:px-8 py-5 text-xs sm:text-sm font-black text-slate-700 uppercase tracking-wide">ประเภทงาน</th>
                         <th class="px-4 sm:px-8 py-5 text-xs sm:text-sm font-black text-slate-700 uppercase tracking-wide">ผู้แจ้ง / หน่วยงาน / ติดต่อ</th>
                         <th class="px-4 sm:px-8 py-5 text-xs sm:text-sm font-black text-slate-700 uppercase tracking-wide">ผู้รับผิดชอบ</th>
                         <th class="px-4 sm:px-8 py-5 text-xs sm:text-sm font-black text-slate-700 uppercase tracking-wide">สถานะ</th>
@@ -89,7 +97,6 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-emerald-600 mb-0.5">{{ $ticket->jobType->name }}</p>
                                     <a href="{{ route('admin.tickets.show', $ticket->id) }}" class="text-slate-900 font-black hover:text-emerald-600 transition-colors block text-sm sm:text-base leading-tight">
                                         {{ $ticket->ticket_number }}
                                     </a>
@@ -97,6 +104,11 @@
                                     <span class="text-[10px] text-slate-400 uppercase tracking-tighter mt-1 block">{{ $ticket->created_at->diffForHumans() }}</span>
                                 </div>
                             </div>
+                        </td>
+                        <td class="px-4 sm:px-8 py-6">
+                            <span class="inline-flex items-center px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100">
+                                {{ $ticket->jobType->name }}
+                            </span>
                         </td>
                         <td class="px-4 sm:px-8 py-6">
                             <p class="font-bold text-slate-700 text-sm sm:text-base">{{ $ticket->requester_name }}</p>
@@ -146,7 +158,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-8 py-20 text-center">
+                        <td colspan="7" class="px-8 py-20 text-center">
                             <div class="flex flex-col items-center">
                                 <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                                     <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>

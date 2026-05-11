@@ -3,7 +3,7 @@
 @section('title', 'ใบงาน')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="w-full">
     <div class="mb-10">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>

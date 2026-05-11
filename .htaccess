@@ -1,5 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{REQUEST_URI} !^/it-ticket/src/public/
-    RewriteRule ^(.*)$ src/public/$1 [L]
+    
+    # ส่งคำขอเข้าไปที่ src/public/index.php โดยตรงพร้อมส่งค่า Path ไปด้วย
+    RewriteRule ^(.*)$ src/public/index.php/$1 [L,QSA]
 </IfModule>

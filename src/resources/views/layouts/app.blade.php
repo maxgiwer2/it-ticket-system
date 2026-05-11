@@ -162,18 +162,34 @@
                         <a href="{{ route('admin.users.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">จัดการผู้ใช้งาน</a>
                     @endif
                     
-                    <div class="flex items-center bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-                        <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-bold mr-2">
-                            {{ substr(auth()->user()->name, 0, 1) }}
+                    <div class="relative group" id="user-dropdown-container">
+                        <button id="user-dropdown-button" class="flex items-center bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-xl border border-slate-100 transition-all active:scale-95">
+                            <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-bold mr-2">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 mr-2">{{ auth()->user()->name }}</span>
+                            <svg class="w-4 h-4 text-slate-400 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-xl border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-900/5 overflow-hidden z-50 animate-fade-in-up">
+                            <div class="p-2 space-y-1">
+                                <a href="{{ route('admin.profile.password') }}" class="flex items-center px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-colors">
+                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                    เปลี่ยนรหัสผ่าน
+                                </a>
+                                
+                                <div class="h-px bg-slate-100 mx-2 my-1"></div>
+                                
+                                <form action="{{ route('logout') }}" method="POST" class="block w-full">
+                                    @csrf
+                                    <button type="submit" class="flex items-center w-full px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-colors text-left">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                        ออกจากระบบ
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        <span class="text-sm font-bold text-slate-700 mr-4">{{ auth()->user()->name }}</span>
-                        
-                        <a href="{{ route('admin.profile.password') }}" class="text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors mr-4 pr-4 border-r border-slate-200">เปลี่ยนรหัสผ่าน</a>
-                        
-                        <form action="{{ route('logout') }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="text-xs font-bold text-slate-400 hover:text-rose-500 transition-colors">ออกจากระบบ</button>
-                        </form>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-lg hover:bg-emerald-600 hover:text-white transition-all">สำหรับเจ้าหน้าที่</a>
@@ -228,6 +244,23 @@
             openIcon.classList.toggle('hidden');
             closeIcon.classList.toggle('hidden');
         });
+
+        // Desktop Dropdown
+        const userBtn = document.getElementById('user-dropdown-button');
+        const userMenu = document.getElementById('user-dropdown-menu');
+
+        if(userBtn) {
+            userBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userMenu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+        }
     </script>
 
     <main class="flex-grow py-10">

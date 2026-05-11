@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\WorkloadController;
+use App\Http\Controllers\Admin\ProfileController;
 
 Route::get('/', [TicketController::class, 'create'])->name('tickets.create');
 Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
@@ -47,4 +48,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() {
     Route::get('/tickets/export', [ReportController::class, 'exportCsv'])->name('tickets.export');
     Route::post('/tickets/{ticket}/accept', [AdminTicketController::class, 'accept'])->name('tickets.accept');
     Route::resource('workloads', WorkloadController::class);
+    
+    // Profile Management
+    Route::get('/profile/password', [ProfileController::class, 'showPasswordForm'])->name('profile.password');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });

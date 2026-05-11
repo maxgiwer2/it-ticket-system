@@ -168,7 +168,9 @@
                         </div>
                         <span class="text-sm font-bold text-slate-700 mr-4">{{ auth()->user()->name }}</span>
                         
-                        <form action="{{ route('logout') }}" method="POST" class="inline border-l border-slate-200 pl-4">
+                        <a href="{{ route('admin.profile.password') }}" class="text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors mr-4 pr-4 border-r border-slate-200">เปลี่ยนรหัสผ่าน</a>
+                        
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="text-xs font-bold text-slate-400 hover:text-rose-500 transition-colors">ออกจากระบบ</button>
                         </form>
@@ -202,6 +204,8 @@
                 @if(auth()->user()->role === 'superadmin')
                     <a href="{{ route('admin.users.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">จัดการผู้ใช้งาน</a>
                 @endif
+
+                <a href="{{ route('admin.profile.password') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">เปลี่ยนรหัสผ่าน</a>
                 
                 <form action="{{ route('logout') }}" method="POST" class="pt-2">
                     @csrf

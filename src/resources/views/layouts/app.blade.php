@@ -158,7 +158,25 @@
                     <a href="{{ route('admin.tickets.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">ใบงาน</a>
                     <a href="{{ route('admin.workloads.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">ภาระงาน</a>
                     <a href="{{ route('admin.departments.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">หน่วยงาน</a>
-                    <a href="{{ route('admin.reports.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">รายงานสถิติ</a>
+                    
+                    <div class="relative group" id="report-dropdown-container">
+                        <button id="report-dropdown-button" class="flex items-center text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">
+                            รายงานสถิติ
+                            <svg class="w-4 h-4 ml-1 text-slate-400 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+
+                        <div id="report-dropdown-menu" class="hidden absolute left-0 mt-2 w-48 bg-white/90 backdrop-blur-xl border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-900/5 overflow-hidden z-50 animate-fade-in-up">
+                            <div class="p-2 space-y-1">
+                                <a href="{{ route('admin.reports.index') }}" class="block px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-colors">
+                                    สถิติพนักงาน
+                                </a>
+                                <a href="{{ route('admin.reports.departments') }}" class="block px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-colors">
+                                    สถิติหน่วยงาน
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     @if(auth()->user()->role === 'superadmin')
                         <a href="{{ route('admin.users.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">จัดการผู้ใช้งาน</a>
                     @endif
@@ -218,7 +236,13 @@
                 <a href="{{ route('admin.tickets.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">ใบงาน</a>
                 <a href="{{ route('admin.workloads.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">ภาระงาน</a>
                 <a href="{{ route('admin.departments.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">หน่วยงาน</a>
-                <a href="{{ route('admin.reports.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">รายงานสถิติ</a>
+                
+                <div class="border-t border-slate-100 my-2 pt-2">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">รายงานสถิติ</p>
+                    <a href="{{ route('admin.reports.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600 mb-2 pl-4 border-l-2 border-emerald-100 hover:border-emerald-500">สถิติพนักงาน</a>
+                    <a href="{{ route('admin.reports.departments') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600 pl-4 border-l-2 border-emerald-100 hover:border-emerald-500">สถิติหน่วยงาน</a>
+                </div>
+
                 @if(auth()->user()->role === 'superadmin')
                     <a href="{{ route('admin.users.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">จัดการผู้ใช้งาน</a>
                 @endif
@@ -260,6 +284,23 @@
             document.addEventListener('click', (e) => {
                 if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) {
                     userMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        // Report Dropdown
+        const reportBtn = document.getElementById('report-dropdown-button');
+        const reportMenu = document.getElementById('report-dropdown-menu');
+
+        if(reportBtn) {
+            reportBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                reportMenu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!reportMenu.contains(e.target) && !reportBtn.contains(e.target)) {
+                    reportMenu.classList.add('hidden');
                 }
             });
         }

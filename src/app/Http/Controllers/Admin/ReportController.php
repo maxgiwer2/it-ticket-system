@@ -97,6 +97,63 @@ class ReportController extends Controller
         return view('admin.reports.index', compact('users', 'jobTypes', 'tickets', 'chartData', 'matrixData', 'dateFrom', 'dateTo', 'years', 'reportType', 'userId'));
     }
 
+    public function departments(Request $request)
+    {
+        // Default to current month and year
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year; // Gregorian
+
+        $selectedMonth = $request->get('month', $currentMonth);
+        $selectedYear = $request->get('year', $currentYear + 543) - 543; // Convert TH to Gregorian
+
+        $dateFrom = Carbon::createFromDate($selectedYear, $selectedMonth, 1)->startOfMonth();
+        $dateTo = Carbon::createFromDate($selectedYear, $selectedMonth, 1)->endOfMonth();
+
+        // Query tickets for the selected month
+        $tickets = Ticket::with(['department', 'jobType', 'technician'])
+            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        // Aggregate by Department
+        $departmentStats = $tickets->groupBy(function($ticket) {
+            return $ticket->department->name ?? 'ไม่ระบุหน่วยงาน';
+        })->map(function($group) {
+            return $group->count();
+        })->sortByDesc(function($count) {
+            return $count;
+        });
+
+        // Aggregate by Job Type
+        $jobTypeStats = $tickets->groupBy(function($ticket) {
+            return $ticket->jobType->name ?? 'ไม่ระบุประเภท';
+        })->map(function($group) {
+            return $group->count();
+        })->sortByDesc(function($count) {
+            return $count;
+        });
+
+        // Dropdown data
+        $months = [
+            1 => 'มกราคม', 2 => 'กุมภาพันธ์', 3 => 'มีนาคม', 4 => 'เมษายน',
+            5 => 'พฤษภาคม', 6 => 'มิถุนายน', 7 => 'กรกฎาคม', 8 => 'สิงหาคม',
+            9 => 'กันยายน', 10 => 'ตุลาคม', 11 => 'พฤศจิกายน', 12 => 'ธันวาคม'
+        ];
+        
+        $currentYearTH = Carbon::now()->year + 543;
+        $years = range($currentYearTH, $currentYearTH - 5);
+
+        return view('admin.reports.departments', compact(
+            'tickets', 
+            'departmentStats', 
+            'jobTypeStats', 
+            'months', 
+            'years', 
+            'selectedMonth', 
+            'selectedYear'
+        ));
+    }
+
     public function exportCsv(Request $request)
     {
         $query = Ticket::with(['department', 'jobType', 'technician']);

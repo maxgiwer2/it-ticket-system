@@ -20,7 +20,7 @@
         <form action="{{ route('admin.tickets.store') }}" method="POST" class="p-8 space-y-6">
             @csrf
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">ชื่อผู้แจ้ง/ผู้ขอรับบริการ</label>
                     <input type="text" name="requester_name" value="{{ old('requester_name') }}" required
@@ -32,6 +32,13 @@
                     <input type="text" name="phone" value="{{ old('phone') }}" required
                         class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         placeholder="ตัวอย่าง 60401">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 flex items-center">
+                        วันที่และเวลา <span class="ml-2 text-[10px] font-normal text-slate-400 uppercase tracking-widest">(บันทึกย้อนหลัง)</span>
+                    </label>
+                    <input type="datetime-local" name="created_at" value="{{ old('created_at', now()->format('Y-m-d\TH:i')) }}"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-600 font-medium">
                 </div>
             </div>
 

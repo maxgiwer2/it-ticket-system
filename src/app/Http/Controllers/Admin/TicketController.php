@@ -71,16 +71,20 @@ class TicketController extends Controller
             'phone' => 'required|string|max:20',
             'job_type_id' => 'required|exists:job_types,id',
             'details' => 'required|string',
+            'created_at' => 'nullable|date',
         ]);
 
-        $date = date('Ymd');
-        $count = Ticket::whereDate('created_at', today())->count() + 1;
-        $ticketNumber = 'TK-' . $date . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+        $customDate = $request->created_at ? \Carbon\Carbon::parse($request->created_at) : now();
+        $dateStr = $customDate->format('Ymd');
+        $count = Ticket::whereDate('created_at', $customDate->toDateString())->count() + 1;
+        $ticketNumber = 'TK-' . $dateStr . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
 
-        $data = $request->all();
+        $data = $request->except(['collaborators', 'created_at']);
         $data['ticket_number'] = $ticketNumber;
         $data['status'] = 'processing';
         $data['assigned_to'] = auth()->id();
+        $data['created_at'] = $customDate;
+        $data['updated_at'] = $customDate; // To align with created_at if created in past
 
         $ticket = Ticket::create($data);
 

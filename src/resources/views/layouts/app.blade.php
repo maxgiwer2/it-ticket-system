@@ -158,6 +158,7 @@
                     <a href="{{ route('admin.tickets.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">ใบงาน</a>
                     <a href="{{ route('admin.workloads.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">ภาระงาน</a>
                     <a href="{{ route('admin.departments.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">หน่วยงาน</a>
+                    <a href="{{ route('admin.reports.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">รายงานสถิติ</a>
                     @if(auth()->user()->role === 'superadmin')
                         <a href="{{ route('admin.users.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">จัดการผู้ใช้งาน</a>
                     @endif
@@ -217,6 +218,7 @@
                 <a href="{{ route('admin.tickets.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">ใบงาน</a>
                 <a href="{{ route('admin.workloads.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">ภาระงาน</a>
                 <a href="{{ route('admin.departments.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">หน่วยงาน</a>
+                <a href="{{ route('admin.reports.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">รายงานสถิติ</a>
                 @if(auth()->user()->role === 'superadmin')
                     <a href="{{ route('admin.users.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">จัดการผู้ใช้งาน</a>
                 @endif

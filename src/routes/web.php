@@ -46,6 +46,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() {
     Route::get('/tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show');
     Route::patch('/tickets/{ticket}/status', [AdminTicketController::class, 'updateStatus'])->name('tickets.updateStatus');
     Route::get('/tickets/export', [ReportController::class, 'exportCsv'])->name('tickets.export');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('/tickets/{ticket}/accept', [AdminTicketController::class, 'accept'])->name('tickets.accept');
     Route::resource('workloads', WorkloadController::class);
     

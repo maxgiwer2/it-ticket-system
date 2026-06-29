@@ -39,4 +39,9 @@ class Ticket extends Model
     {
         return $this->belongsToMany(User::class, 'ticket_collaborators');
     }
+
+    public function survey()
+    {
+        return $this->hasOne(TicketSurvey::class);
+    }
 }

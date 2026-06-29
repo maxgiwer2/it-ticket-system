@@ -158,6 +158,7 @@
                     <a href="{{ route('admin.tickets.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">ใบงาน</a>
                     <a href="{{ route('admin.workloads.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">ภาระงาน</a>
                     <a href="{{ route('admin.departments.index') }}" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">หน่วยงาน</a>
+                    <a href="/it_inventory/" target="_blank" class="text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">รายการวัสดุ</a>
                     
                     <div class="relative group" id="report-dropdown-container">
                         <button id="report-dropdown-button" class="flex items-center text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors">
@@ -172,6 +173,9 @@
                                 </a>
                                 <a href="{{ route('admin.reports.departments') }}" class="block px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-colors">
                                     สถิติหน่วยงาน
+                                </a>
+                                <a href="{{ route('admin.reports.satisfaction') }}" class="block px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-colors">
+                                    ความพึงพอใจ
                                 </a>
                             </div>
                         </div>
@@ -236,11 +240,13 @@
                 <a href="{{ route('admin.tickets.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">ใบงาน</a>
                 <a href="{{ route('admin.workloads.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">ภาระงาน</a>
                 <a href="{{ route('admin.departments.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600">หน่วยงาน</a>
+                <a href="/it_inventory/" target="_blank" class="block text-base font-bold text-slate-700 hover:text-emerald-600">รายการวัสดุ</a>
                 
                 <div class="border-t border-slate-100 my-2 pt-2">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">รายงานสถิติ</p>
                     <a href="{{ route('admin.reports.index') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600 mb-2 pl-4 border-l-2 border-emerald-100 hover:border-emerald-500">สถิติพนักงาน</a>
-                    <a href="{{ route('admin.reports.departments') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600 pl-4 border-l-2 border-emerald-100 hover:border-emerald-500">สถิติหน่วยงาน</a>
+                    <a href="{{ route('admin.reports.departments') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600 mb-2 pl-4 border-l-2 border-emerald-100 hover:border-emerald-500">สถิติหน่วยงาน</a>
+                    <a href="{{ route('admin.reports.satisfaction') }}" class="block text-base font-bold text-slate-700 hover:text-emerald-600 pl-4 border-l-2 border-emerald-100 hover:border-emerald-500">ความพึงพอใจ</a>
                 </div>
 
                 @if(auth()->user()->role === 'superadmin')

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
@@ -26,6 +27,7 @@ Route::get('/', [TicketController::class, 'create'])->name('tickets.create');
 Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
 Route::get('/tickets/search', [TicketController::class, 'statusSearch'])->name('tickets.search');
 Route::get('/tickets/{ticket_number}', [TicketController::class, 'show'])->name('tickets.show');
+Route::post('/tickets/{ticket_number}/survey', [SurveyController::class, 'store'])->name('surveys.store');
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ReportController;
@@ -48,6 +50,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() {
     Route::get('/tickets/export', [ReportController::class, 'exportCsv'])->name('tickets.export');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/departments', [ReportController::class, 'departments'])->name('reports.departments');
+    Route::get('/reports/satisfaction', [ReportController::class, 'satisfaction'])->name('reports.satisfaction');
     Route::post('/tickets/{ticket}/accept', [AdminTicketController::class, 'accept'])->name('tickets.accept');
     Route::resource('workloads', WorkloadController::class);
     

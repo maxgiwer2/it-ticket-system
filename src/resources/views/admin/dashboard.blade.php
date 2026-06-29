@@ -66,6 +66,24 @@
                     </div>
                 </div>
             </a>
+
+            <!-- Satisfaction -->
+            <a href="{{ route('admin.reports.satisfaction') }}" class="glass-card p-8 rounded-[2rem] border-l-8 border-l-amber-400 shadow-xl shadow-slate-200/30 hover:-translate-y-2 transition-all group relative overflow-hidden block md:col-span-2 lg:col-span-1">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-400/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="relative">
+                    <p class="text-amber-500 font-black text-sm uppercase tracking-wider mb-2">ความพึงพอใจเฉลี่ย</p>
+                    <div class="flex items-end gap-3">
+                        <h3 class="text-5xl font-black text-slate-900 tracking-tighter">{{ $satisfactionAvg }}</h3>
+                        <span class="text-amber-500 font-bold text-xs mb-2">/ 5</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-2">
+                        @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-4 h-4 {{ $i <= round($satisfactionAvg) ? 'text-amber-400' : 'text-slate-200' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.446a1 1 0 00-.364 1.118l1.287 3.957c.3.922-.755 1.688-1.54 1.118l-3.366-2.446a1 1 0 00-1.175 0l-3.366 2.446c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.98 9.391c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path></svg>
+                        @endfor
+                        <span class="text-[10px] text-slate-400 font-bold ml-2">{{ $satisfactionCount }} ผลตอบรับ</span>
+                    </div>
+                </div>
+            </a>
         </div>
     </section>
 

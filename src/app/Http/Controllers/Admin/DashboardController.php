@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Models\TicketSurvey;
 use App\Models\Department;
 use App\Models\Workload;
 use Illuminate\Http\Request;
@@ -121,14 +122,23 @@ class DashboardController extends Controller
             $chartData['data'][] = $dailyTrend->get($date, 0);
         }
 
+        // Satisfaction summary
+        $surveys = TicketSurvey::all();
+        $satisfactionCount = $surveys->count();
+        $satisfactionAvg = $satisfactionCount > 0
+            ? round($surveys->avg(fn($s) => ($s->rating_speed + $s->rating_manner + $s->rating_quality) / 3), 1)
+            : 0;
+
         return view('admin.dashboard', compact(
-            'stats', 
-            'personalStats', 
-            'calendarData', 
-            'latestTickets', 
-            'chartData', 
+            'stats',
+            'personalStats',
+            'calendarData',
+            'latestTickets',
+            'chartData',
             'deptStats',
-            'selectedDate'
+            'selectedDate',
+            'satisfactionAvg',
+            'satisfactionCount'
         ));
     }
 }

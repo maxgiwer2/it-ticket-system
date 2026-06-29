@@ -150,12 +150,100 @@
         @if($ticket->attachment_path)
         <div class="mt-8">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">ไฟล์แนบ</h3>
-            <a href="{{ Storage::url($ticket->attachment_path) }}" target="_blank" 
+            <a href="{{ Storage::url($ticket->attachment_path) }}" target="_blank"
                class="inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-emerald-50 text-emerald-600 rounded-xl transition-all">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                 เปิดไฟล์แนบ
             </a>
         </div>
+        @endif
+
+        {{-- แบบประเมินความพึงพอใจ (แสดงเมื่อใบงานเสร็จสิ้นแล้วเท่านั้น) --}}
+        @if($ticket->status === 'completed')
+            @php
+                $criteria = [
+                    'rating_speed' => 'ความรวดเร็วในการให้บริการ',
+                    'rating_manner' => 'ความสุภาพ/มารยาทของเจ้าหน้าที่',
+                    'rating_quality' => 'คุณภาพและผลของการแก้ไขงาน',
+                ];
+            @endphp
+
+            @if($ticket->survey)
+                {{-- ประเมินแล้ว: แสดงผลแบบอ่านอย่างเดียว --}}
+                <div class="mt-8 p-6 sm:p-8 bg-emerald-50/40 rounded-3xl border border-emerald-100">
+                    <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+                        <h3 class="text-base font-black text-emerald-700 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            ท่านได้ประเมินความพึงพอใจแล้ว
+                        </h3>
+                        <span class="text-sm font-bold text-emerald-600">คะแนนเฉลี่ย {{ $ticket->survey->average }} / 5</span>
+                    </div>
+                    <div class="space-y-4">
+                        @foreach($criteria as $field => $label)
+                            <div class="flex items-center justify-between gap-4">
+                                <span class="text-sm font-medium text-slate-700">{{ $label }}</span>
+                                <div class="flex gap-0.5">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <svg class="w-5 h-5 {{ $i <= $ticket->survey->$field ? 'text-amber-400' : 'text-slate-200' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.446a1 1 0 00-.364 1.118l1.287 3.957c.3.922-.755 1.688-1.54 1.118l-3.366-2.446a1 1 0 00-1.175 0l-3.366 2.446c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.98 9.391c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path></svg>
+                                    @endfor
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @if($ticket->survey->comment)
+                        <div class="mt-6 pt-5 border-t border-emerald-100">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">ความคิดเห็นเพิ่มเติม</h4>
+                            <p class="text-slate-700 leading-relaxed italic">{{ $ticket->survey->comment }}</p>
+                        </div>
+                    @endif
+                </div>
+            @else
+                {{-- ยังไม่ประเมิน: แสดงฟอร์ม --}}
+                <div class="mt-8 p-6 sm:p-8 glass-card rounded-3xl border border-emerald-100">
+                    <h3 class="text-lg font-black text-slate-800 mb-1 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                        ประเมินความพึงพอใจในการให้บริการ
+                    </h3>
+                    <p class="text-sm text-slate-500 mb-6">งานของท่านเสร็จสิ้นแล้ว โปรดสละเวลาให้คะแนนเพื่อช่วยเราพัฒนาการบริการ</p>
+
+                    <form action="{{ route('surveys.store', $ticket->ticket_number) }}" method="POST" class="space-y-6">
+                        @csrf
+
+                        @foreach($criteria as $field => $label)
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">{{ $label }}</label>
+                                <div class="star-rating inline-flex gap-1" data-target="{{ $field }}">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <button type="button" data-value="{{ $i }}"
+                                            class="star text-slate-300 hover:scale-110 transition-transform focus:outline-none"
+                                            title="{{ $i }} ดาว">
+                                            <svg class="w-9 h-9" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.446a1 1 0 00-.364 1.118l1.287 3.957c.3.922-.755 1.688-1.54 1.118l-3.366-2.446a1 1 0 00-1.175 0l-3.366 2.446c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.98 9.391c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path></svg>
+                                        </button>
+                                    @endfor
+                                </div>
+                                <input type="hidden" name="{{ $field }}" id="input_{{ $field }}" value="{{ old($field) }}">
+                                @error($field)
+                                    <p class="mt-2 text-xs text-rose-500 font-bold">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        @endforeach
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">ความคิดเห็นเพิ่มเติม (ถ้ามี)</label>
+                            <textarea name="comment" rows="3"
+                                class="w-full px-4 py-3 bg-white/50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-300"
+                                placeholder="ข้อเสนอแนะหรือคำชมเพิ่มเติม...">{{ old('comment') }}</textarea>
+                            @error('comment')
+                                <p class="mt-2 text-xs text-rose-500 font-bold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="w-full cta-gradient text-white font-black py-4 rounded-2xl shadow-lg shadow-emerald-100 hover:-translate-y-0.5 transition-all interactive-scale">
+                            ส่งแบบประเมิน
+                        </button>
+                    </form>
+                </div>
+            @endif
         @endif
     </div>
     
@@ -173,6 +261,39 @@
             alert('คัดลอกหมายเลข Ticket: ' + ticketNum + ' แล้ว');
         });
     }
+
+    // Interactive star rating widgets
+    document.querySelectorAll('.star-rating').forEach(function (group) {
+        const target = group.dataset.target;
+        const input = document.getElementById('input_' + target);
+        const stars = group.querySelectorAll('.star');
+
+        function paint(value) {
+            stars.forEach(function (star) {
+                const v = parseInt(star.dataset.value, 10);
+                star.classList.toggle('text-amber-400', v <= value);
+                star.classList.toggle('text-slate-300', v > value);
+            });
+        }
+
+        stars.forEach(function (star) {
+            star.addEventListener('click', function () {
+                const value = parseInt(star.dataset.value, 10);
+                input.value = value;
+                paint(value);
+            });
+            star.addEventListener('mouseenter', function () {
+                paint(parseInt(star.dataset.value, 10));
+            });
+        });
+
+        group.addEventListener('mouseleave', function () {
+            paint(parseInt(input.value, 10) || 0);
+        });
+
+        // restore previous value (e.g. validation error)
+        paint(parseInt(input.value, 10) || 0);
+    });
 </script>
 @endpush
 @endsection

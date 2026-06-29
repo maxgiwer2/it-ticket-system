@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Models\TicketSurvey;
 use App\Models\User;
 use App\Models\JobType;
 use Carbon\Carbon;
@@ -151,6 +152,52 @@ class ReportController extends Controller
             'years', 
             'selectedMonth', 
             'selectedYear'
+        ));
+    }
+
+    public function satisfaction(Request $request)
+    {
+        $surveys = TicketSurvey::with(['ticket.technician', 'ticket.department'])->get();
+
+        $responseCount = $surveys->count();
+        $completedCount = Ticket::where('status', 'completed')->count();
+        $responseRate = $completedCount > 0 ? round($responseCount / $completedCount * 100, 1) : 0;
+
+        // คะแนนเฉลี่ยรายด้าน + รวม
+        $avgSpeed = round($surveys->avg('rating_speed') ?? 0, 2);
+        $avgManner = round($surveys->avg('rating_manner') ?? 0, 2);
+        $avgQuality = round($surveys->avg('rating_quality') ?? 0, 2);
+        $avgOverall = $responseCount > 0 ? round(($avgSpeed + $avgManner + $avgQuality) / 3, 2) : 0;
+
+        // การกระจายคะแนน (ตามคะแนนเฉลี่ยปัดของแต่ละใบ)
+        $distribution = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        foreach ($surveys as $s) {
+            $score = (int) round(($s->rating_speed + $s->rating_manner + $s->rating_quality) / 3);
+            $score = max(1, min(5, $score));
+            $distribution[$score]++;
+        }
+
+        // คะแนนเฉลี่ยแยกตามเจ้าหน้าที่ผู้รับผิดชอบ
+        $byTechnician = $surveys
+            ->groupBy(fn($s) => $s->ticket->technician->name ?? 'ไม่ระบุผู้รับผิดชอบ')
+            ->map(function ($group) {
+                return [
+                    'count' => $group->count(),
+                    'average' => round($group->avg(fn($s) => ($s->rating_speed + $s->rating_manner + $s->rating_quality) / 3), 2),
+                ];
+            })
+            ->sortByDesc('average');
+
+        // ความคิดเห็นล่าสุด
+        $recentComments = $surveys
+            ->filter(fn($s) => filled($s->comment))
+            ->sortByDesc('created_at')
+            ->take(20);
+
+        return view('admin.reports.satisfaction', compact(
+            'responseCount', 'completedCount', 'responseRate',
+            'avgSpeed', 'avgManner', 'avgQuality', 'avgOverall',
+            'distribution', 'byTechnician', 'recentComments'
         ));
     }
 
